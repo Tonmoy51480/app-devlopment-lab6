@@ -3,7 +3,7 @@ import SearchBar from "@/components/search-bar";
 import StudentDetail from "@/components/student-detail";
 import StudentItem from "@/components/student-item";
 import { Student, STUDENTS } from "@/data/students";
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Text, StyleSheet, View, FlatList, Pressable } from "react-native";
 
 import { router } from "expo-router";
@@ -34,13 +34,15 @@ export default function HomePage() {
     //     setShowForm(false);
     // };
 
-    const filtered = students.filter((s) => {
-        return s.name.toLowerCase().includes(debouncedQuery.toLowerCase()) || s.department.toLowerCase().includes(debouncedQuery.toLowerCase());
-    });
+    const filtered = useMemo(() => {
+        return students.filter((s) => {
+            return s.name.toLowerCase().includes(debouncedQuery.toLowerCase()) || s.department.toLowerCase().includes(debouncedQuery.toLowerCase());
+        });
+    }, [students, debouncedQuery]);
 
-    const handleSelect = (student: Student) => {
+    const handleSelect = useCallback((student: Student) => {
         setSelectedStudent((prev) => (prev?.id === student.id ? null : student));
-    };
+    }, []);
 
     // Replaced by new route
     // if (showForm) {
