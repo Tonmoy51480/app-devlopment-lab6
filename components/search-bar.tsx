@@ -1,6 +1,4 @@
-// components/search-bar.tsx
-
-import React from "react";
+import React, { forwardRef } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
 interface SearchBarProps {
@@ -10,10 +8,12 @@ interface SearchBarProps {
     debounceDelay?: number;
 }
 
-export default function SearchBar({ value, onChangeText, placeholder, debounceDelay = 300 }: SearchBarProps) {
-    return (
+// forwardRef lets a parent pass a ref down into this component
+const SearchBar = forwardRef<TextInput, SearchBarProps>(
+    ({ value, onChangeText, placeholder, debounceDelay = 300 }, ref) => (
         <View style={styles.container}>
             <TextInput
+                ref={ref}
                 style={styles.input}
                 value={value}
                 onChangeText={onChangeText}
@@ -25,8 +25,10 @@ export default function SearchBar({ value, onChangeText, placeholder, debounceDe
                 returnKeyType="search"
             />
         </View>
-    );
-}
+    )
+);
+
+export default SearchBar;
 
 const styles = StyleSheet.create({
     container: {

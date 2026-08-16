@@ -3,8 +3,8 @@ import SearchBar from "@/components/search-bar";
 import StudentDetail from "@/components/student-detail";
 import StudentItem from "@/components/student-item";
 import { Student, STUDENTS } from "@/data/students";
-import React, { useState, useMemo, useCallback } from "react";
-import { Text, StyleSheet, View, FlatList, Pressable } from "react-native";
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { Text, StyleSheet, View, FlatList, Pressable, TextInput } from "react-native";
 
 import { router } from "expo-router";
 import { useStudents } from "../../context/students-context";
@@ -14,6 +14,15 @@ import { useDebounce } from "../../hooks/use-debounce";
 export default function HomePage() {
     const [query, setQuery] = useState<string>("");
     const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+    const searchRef = useRef<TextInput>(null);
+
+    // Focus the search bar 300ms after mount (lets animation finish)
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            searchRef.current?.focus();
+        }, 300);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Replaced by router navigation
     // const [showForm, setShowForm] = useState(false);
@@ -59,7 +68,7 @@ export default function HomePage() {
                 </Pressable>
             </View>
 
-            <SearchBar value={query} onChangeText={setQuery} debounceDelay={300} />
+            <SearchBar ref={searchRef} value={query} onChangeText={setQuery} debounceDelay={300} />
 
             <FlatList
                 data={filtered}
