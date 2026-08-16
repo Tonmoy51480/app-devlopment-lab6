@@ -7,9 +7,10 @@ interface SearchBarProps {
     value: string;
     onChangeText: (text: string) => void;
     placeholder?: string; // the ? means this prop is optional
+    debounceDelay?: number;
 }
 
-export default function SearchBar({ value, onChangeText, placeholder }: SearchBarProps) {
+export default function SearchBar({ value, onChangeText, placeholder, debounceDelay = 300 }: SearchBarProps) {
     return (
         <View style={styles.container}>
             <TextInput

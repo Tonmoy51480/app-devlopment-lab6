@@ -9,6 +9,7 @@ import { Text, StyleSheet, View, FlatList, Pressable } from "react-native";
 import { router } from "expo-router";
 import { useStudents } from "../../context/students-context";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDebounce } from "../../hooks/use-debounce";
 
 export default function HomePage() {
     const [query, setQuery] = useState<string>("");
@@ -22,6 +23,8 @@ export default function HomePage() {
     // Read students directly from the global context
     const { students } = useStudents();
 
+    const debouncedQuery = useDebounce(query, 300);
+
     // No longer needed
     // const handleNewStudent = (newStudent: Student) => {
     //     // Lifting state up in action: the form hands the new
@@ -32,7 +35,7 @@ export default function HomePage() {
     // };
 
     const filtered = students.filter((s) => {
-        return s.name.toLowerCase().includes(query.toLowerCase()) || s.department.toLowerCase().includes(query.toLowerCase());
+        return s.name.toLowerCase().includes(debouncedQuery.toLowerCase()) || s.department.toLowerCase().includes(debouncedQuery.toLowerCase());
     });
 
     const handleSelect = (student: Student) => {
@@ -54,7 +57,7 @@ export default function HomePage() {
                 </Pressable>
             </View>
 
-            <SearchBar value={query} onChangeText={setQuery} />
+            <SearchBar value={query} onChangeText={setQuery} debounceDelay={300} />
 
             <FlatList
                 data={filtered}
